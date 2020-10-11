@@ -1,17 +1,18 @@
 #include <iostream>
+#include <set>
 #define FORI(n) for(int i = 0; i < (n); i++)
 #define FORJ(n) for(int j = 0; j < (n); j++)
 using namespace std;
 
+typedef set<int> si;
 int n, m;
 
 int main()
 {
-	cin >> n >> m; //knights and fights
-	int knights[n];
-	bool in_game[n];
-	FORI(n) knights[i] = 0;
-	FORI(n) in_game[i] = true;
+	cin >> n >> m;
+	int res[n] = {0};
+	si not_defeated;
+	FORI(n) not_defeated.insert(i);
 	
 	int l, r, won;
 	FORI(m)
@@ -19,16 +20,27 @@ int main()
 		cin >> l >> r >> won;
 		l--;
 		r--;
-		for(int j = l; j <= r; j++)
+		won--;
+		si defeated;
+		for(auto it = not_defeated.lower_bound(l); it != not_defeated.end(); it++)
 		{
-			if(in_game[j] && j + 1 != won)
+			int knight = *it;
+			if(knight > r) break;
+			if(knight != won)
 			{
-				knights[j] = won;
-				in_game[j] = false;
+				defeated.insert(knight);
 			}
 		}
-	}
+		
+		for(auto it = defeated.begin(); it != defeated.end(); it++) 
+		{
+			auto defeated_knight = *it;
+			not_defeated.erase(defeated_knight);
+			res[defeated_knight] = won + 1;
+		}
+		
+	} 
 	
-	FORI(n) cout << knights[i] << " ";
+	FORI(n) cout << res[i] << " ";
 	cout << '\n';
 }
