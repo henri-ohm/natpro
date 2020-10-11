@@ -15,39 +15,47 @@ int main()
 	cin >> n >> m >> k;
 	int64_t a[n];
 	int64_t diff[n];
-	op ops[m];
 	
-	FORI(n) 
-	{
+	
+	FORI(n) {
 		cin >> a[i];
 		diff[i] = i == 0 ? a[i] : a[i] - a[i - 1];
 	}
 	
+	op ops[m];
 	int l, r, d;
-	FORI(m) 
-	{
-		cin >> l >> r >> d; // add d to a_l, ..., a_r
+	FORI(m) {
+		cin >> l >> r >> d;
 		l--; r--;
 		ops[i] = {l, r, d};
 	}
 	
+
+	int inner_diff[m] = {0};
 	int x, y;
-	FORI(k)
-	{
-		cin >> x >> y; // commit all ops_x, ..., ops_y
+	FORI(k){
+		cin >> x >> y;
 		x--; y--;
-		for(; x <= y; x++)
-		{
-			op curr = ops[x];
-			diff[curr.l] += curr.d;
-			diff[curr.r + 1] -= curr.d;
-		}
+		inner_diff[x]++;
+		inner_diff[y+1]--;
 	}
 	
-	FORI(n) 
-	{
+	
+	
+	int ops_todo[m] = {0};
+	FORI(m){
+		ops_todo[i] = i == 0 ? inner_diff[i] : inner_diff[i] + ops_todo[i - 1];
+		
+		op curr = ops[i];
+		diff[curr.l] += ops_todo[i] * 1LL * curr.d;
+		diff[curr.r + 1] -= ops_todo[i] * 1LL * curr.d;
+
+	}	
+	
+	FORI(n) {
 		a[i] = i == 0 ? diff[0] : diff[i] + a[i - 1];
 		cout << a[i] << " ";
 	}
 	cout << '\n';
 }
+
