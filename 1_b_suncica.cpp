@@ -3,7 +3,7 @@
 using namespace std;
 
 vector<long long> fen;
-
+int n,q;
 long long fen_sum(int index)
 {
 	long long sum = 0;
@@ -26,7 +26,7 @@ void fen_add(int index, long long val)
 
 int main()
 {
-	int n,q;
+	
 	cin >> n >> q;
 	long long x;
 	long long diff[n];
