@@ -25,14 +25,7 @@ int main()
 		cin >> query;
 		if(query == 1)
 		{
-			cin >> l >> r;
-			vector<int>::const_iterator first = k.begin() + l - 1;
-			vector<int>::const_iterator last = k.begin() + r;
-			vector<int> segment(first, last);
-			sort(segment.begin(), segment.end());
 			
-			
-			cout << segment[r - l - 1] << '\n';
 		}
 		else if(query == 2) 
 		{
