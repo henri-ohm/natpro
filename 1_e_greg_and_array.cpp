@@ -12,6 +12,8 @@ typedef struct {
 
 int main()
 {
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
 	cin >> n >> m >> k;
 	int64_t a[n];
 	int64_t diff[n];

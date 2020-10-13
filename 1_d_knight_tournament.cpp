@@ -9,6 +9,8 @@ int n, m;
 
 int main()
 {
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
 	cin >> n >> m;
 	int res[n] = {0};
 	si not_defeated;

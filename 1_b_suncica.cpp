@@ -26,7 +26,8 @@ void fen_add(int index, long long val)
 
 int main()
 {
-	
+	ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
 	cin >> n >> q;
 	long long x;
 	long long diff[n];
