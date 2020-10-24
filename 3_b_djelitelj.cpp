@@ -15,6 +15,7 @@ using us  = uint16_t;
 using vi   = vector<i>;
 using vll  = vector<ll>;
 using vull = vector<ull>;
+using pii = pair<i,i>;
 
 int q;
 int a, b, k;
@@ -22,16 +23,25 @@ int a, b, k;
 
 #define N 100001
 int num[N];
-
+auto pairs = vector<pair<int, int>>(N); // pair of a number n, and the number of his divisors
 void napuni_djelitelje()
 {
-    for(int i = 1; i < N; i++)
+    for(int i = 1; i <= N; i++)
     {
         for(int j = i; j < N; j += i)
         {
             num[j - 1]++;
         }
     }
+
+    for(int i = 1; i <= N; i++)
+    {
+        pairs[i - 1] = {i, num[i-1]};
+    }
+
+    sort(pairs.begin(), pairs.end(), [](pii& a, pii& b){ 
+        return a.second == b.second ? a.first < b.first : a.second < b.second;
+    });
 }
 
 int main()
@@ -42,16 +52,19 @@ int main()
     while(q--)
     {
         cin >> a >> b >> k;
-        // koliko brojeva u [a, b] ima tocno k pozitivnih dijelitelja
-        if(k == 1 && a == 1)
-        {
-            cout << 1 << '\n';
-            continue;
-        }
         
         int c = 0;
-        for(int it = a; it <= b; it++)
-            if(num[it - 1] == k) c++;
+
+        auto it = lower_bound(pairs.begin(), pairs.end(), make_pair(0, k), [](const pii& a, const pii& b){
+            return a.second == b.second ? a.first < b.first : a.second < b.second;
+        });
+        
+        for(; it != pairs.end(); it++)
+        {
+            auto curr = *it;
+            if(curr.second != k) break;
+            if(curr.first >= a && curr.first <= b) c++;
+        }
         
         cout << c << '\n';
     }
