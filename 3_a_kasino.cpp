@@ -1,88 +1,133 @@
 #include<bits/stdc++.h>
-
-#define MOD 1000000007L
-#define LOG(x) cout << #x << "::" << x << '\n'
 using namespace std;
 using ll = uint64_t;
-using s = uint16_t;
-using vll = vector<ll>;
-using vvs = vector<vector<s>>;
 
-void init();
-void solve();
-void print_sol();
-
-s n, m;
+constexpr ll MOD = 1e9 + 7;
+int n, m;
 ll t;
-vll money_current;
-vll money_future;
-vvs who_likes_who;
+
+void init_matrix(ll A[]);
+void multiply_matrix(ll A[], ll B[], ll C[]); // result in C
+void power_matrix(ll A[], ll t);
+void mat_mul_vec(ll A[], ll a[], ll b[]);
+ll dot_prod(ll A[], int row, ll B[], int col);
+void matrix_copy(ll from[], ll to[]);
+void matrix_print(ll A[]);
+void identity_matrix(ll A[]);
 
 int main()
-{
-	init();
-	solve();
-	print_sol();
-}
-
-void solve()
-{
-	while(t--)
-	{
-		for(s person = 0; person < n; person++)
-		{
-			s i_like = who_likes_who[person].size();
-			ll my_money = money_current[person];
-
-			for(auto liked_person: who_likes_who[person])
-			{
-				money_future[liked_person] += my_money % MOD;
-			}
-		}
-
-		for(s it = 0; it < n; it++)
-		{
-			money_current[it] += money_future[it] % MOD;
-			money_future[it] = 0;
-			
-		}
-	}
-}
-
-void init()
 {
 	ios_base::sync_with_stdio(false);
 	cin.tie(nullptr);
 	cout.tie(nullptr);
-
 	cin >> n >> m;
+	ll A[n*n];
+	init_matrix(A);
 
-	money_current = vll(n);
-	money_future = vll(n, 0);
-	who_likes_who = vvs(n);
-	s subjekt, objekt;
-
+	int i, j;
 	while(m--)
 	{
-		cin >> subjekt >> objekt;
-		who_likes_who[subjekt - 1].push_back(objekt - 1);
+		cin >> i >> j;
+		A[(j - 1)*n + i - 1] = 1;
+		
 	}
+	for(int i = 0; i < n; i++) A[i*n + i] = 1;
+	
 
-	ll a;
+	ll a[n];
 	for(int i = 0; i < n; i++)
 	{
-		cin >> a;
-		money_current[i] = a;
+		cin >> a[i];
+		
 	}
-
 	cin >> t;
+	
+
+	power_matrix(A, t);
+
+
+	ll res[n]; //result stored here
+	mat_mul_vec(A, a, res);
+
+	for(int i = 0; i < n; i++) cout << res[i] << ' ';
+	cout <<'\n';
 }
 
-void print_sol()
+void matrix_print(ll A[])
 {
-	for(auto money: money_current)
-	{
-		cout << money << ' ';
+	for(int i = 0; i < n; i++){
+		for(int j = 0; j < n; j++){
+			cout << A[i*n + j] << ' ';
+		} cout << '\n';
 	}
 	cout << '\n';
+}
+
+void power_matrix(ll A[], ll t)
+{
+	ll B[n*n];
+	ll res[n*n];
+	init_matrix(B);
+	identity_matrix(res);
+	while(t)
+	{	
+		if(t & 1)
+		{
+			multiply_matrix(res, A, B);
+			matrix_copy(B, res);
+		}
+
+		t >>= 1;
+
+		multiply_matrix(A, A, B);
+		matrix_copy(B, A);
+	}
+	matrix_copy(res, A);
+}
+
+void identity_matrix(ll A[])
+{
+	init_matrix(A);
+	for(int i = 0; i < n; i++) A[i*n + i] = 1;
+}
+
+void init_matrix(ll A[])
+{
+	for(int i = 0; i < n * n; i++)
+		A[i] = 0;
+}
+
+void multiply_matrix(ll A[], ll B[], ll C[])
+{
+	init_matrix(C);
+
+	for(int i = 0; i < n; i++){
+		for(int j = 0; j < n; j++){
+			C[i*n + j] = dot_prod(A, i, B, j);
+		}
+	}
+}
+
+ll dot_prod(ll A[], int row, ll B[], int col)
+{
+	ll res = 0;
+	for(int i = 0; i < n; i++){
+		res = ((res % MOD) + ((A[row * n + i] % MOD) * (B[i * n + col] % MOD)) % MOD) % MOD;
+	}
+	return res;
+}
+
+void mat_mul_vec(ll A[], ll a[], ll b[])
+{
+	for(int i = 0; i < n; i++){
+		b[i] = 0;
+		for(int j = 0; j < n; j++){
+			b[i] = ((b[i] % MOD) + ((A[i*n + j] % MOD)*(a[j] % MOD)) % MOD) % MOD;
+		}
+	}
+}
+
+void matrix_copy(ll from[], ll to[])
+{
+	for(int i = 0; i < n*n; i++) to[i] = from[i];
 }
