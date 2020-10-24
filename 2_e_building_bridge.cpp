@@ -1,6 +1,6 @@
 #include <bits/stdc++.h>
 #define FORI(n) for(int i = 0; i < n; i++)
-#define LOG(x) cout << #x << "::" << x << '\n'
+#define LOG(x) cout << "::" << #x << "::" << x << '\n'
 using namespace std;
 using ld = long double;
 
@@ -13,8 +13,7 @@ ld dist(int y_a, int y_b)
 
 int main()
 {
-	ios_base::sync_with_stdio(false);
-	cin.tie(nullptr);
+
 	
 	int n, m;
 	
@@ -30,6 +29,7 @@ int main()
 	int Aans, Bans;
 	ld min_dist = -1;
 	
+#ifdef MLOGN // MLOGN ends O(m*logn) solution	
 	FORI(m)
 	{		
 		double lo = 0, hi = n - 1;
@@ -63,5 +63,40 @@ int main()
 		}	
 	}
 	
-	cout << Aans << " " << Bans << '\n';	
+
+#else
+	
+	int it_a = n - 1, it_b = m - 1;
+	while(it_b >= 0 && it_a >= 0)
+	{
+		int y_a_top = A[it_a];
+		int y_a_bot = A[it_a - 1];
+		
+		int y_b_top = B[it_b];
+		
+		ld b_to_a_top = dist(y_a_top, y_b_top);
+		ld b_to_a_bot = dist(y_a_bot, y_b_top);
+		
+		if(b_to_a_top > b_to_a_bot)
+		{
+			it_a--;
+		} 
+		else 
+		{
+			if(min_dist == -1 || b_to_a_top + LB[it_b] < min_dist)
+			{
+				min_dist = b_to_a_top + LB[it_b];
+				Aans = it_a + 1;
+				Bans = it_b + 1;
+			}
+			it_b--;
+		}
+		
+	}
+	
+#endif
+
+
+
+	cout << Aans << " " << Bans << '\n';
 }
