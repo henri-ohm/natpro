@@ -16,14 +16,21 @@ auto divs = vector<ll>(n);
 int main()
 {
     io_init();
-
+    fill_divs();
     int q;
     cin >> q;
     while(q--)
     {
         cin >> a >> b >> u >> v;
-        fill_divs(a, b);
         c = 0;
+        
+        if(u > 4390848 && v > 4390848){
+            cout << 0 << '\n';
+            continue;
+        }
+
+        if(v > 4390848) v = 4390848;
+
         for(int i = a; i <= b; i++)
         {
             if(divs[i - 1] <= v && divs[i - 1] >= u) c++;
@@ -33,11 +40,11 @@ int main()
     }
 }
 
-void fill_divs(i a, i b)
+void fill_divs()
 {
     for(int i = 1; i <= n; i++)
     {
-        for(int j = a; j <= b; j += i)
+        for(int j = i; j <= n; j += i)
         {
             divs[j - 1] += i;
         }
