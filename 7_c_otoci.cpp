@@ -25,6 +25,8 @@ void dfs(int x, vector<double>& prob, map<int, vector<int>>& graf, double probab
 
 int main()
 {
+    ios_base::sync_with_stdio(false);
+    cin.tie(nullptr);
     cin >> n >> m >> r;
     int a, b;
     
